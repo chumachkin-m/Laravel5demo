@@ -24,7 +24,10 @@ class MainFormController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'formGroupNameInput' => 'required|alpha_spaces|min:3|max:128',
+            'formGroupPhoneInput' => 'required|number|min:11|max:64',
+        ]);
     }
 
 }
