@@ -126,6 +126,8 @@ return [
     | specify a specific custom language line for a given attribute rule.
     |
     */
+    'alpha_spaces' => 'The :attribute can contain only aphabet and spaces',
+    'only_digits' => 'The :attribute can contain only digits',
 
     'custom' => [
         'attribute-name' => [

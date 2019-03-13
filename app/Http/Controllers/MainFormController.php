@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Session;
+use App\Events\SendMessage;
 
 class MainFormController extends Controller
 {
@@ -24,10 +27,23 @@ class MainFormController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'formGroupNameInput' => 'required|alpha_spaces|min:3|max:128',
-            'formGroupPhoneInput' => 'required|number|min:11|max:64',
+        $validator = Validator::make($request->all(), [
+            'formGroupNameInput' => 'required|string|alpha_spaces|min:3|max:128',
+            'formGroupPhoneInput' => 'required|string|only_digits|min:11|max:64',
         ]);
+
+        if ($validator->fails()) {
+            return redirect('/')
+                        ->withErrors($validator)
+                        ->withInput();
+        } else {
+            event(new SendMessage(
+                $request->input('formGroupPhoneInput'), 
+                $request->input('formGroupNameInput')
+            ));
+            Session::flash('success_send_message', "Message send success");
+            return redirect('/')->withInput();
+        }
     }
 
 }
